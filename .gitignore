@@ -1,0 +1,6 @@
+.env
+__pycache__
+.transcript_chroma
+.venv
+test.ipynb
+transcripts

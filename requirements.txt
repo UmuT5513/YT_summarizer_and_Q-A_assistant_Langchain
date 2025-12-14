@@ -1,0 +1,18 @@
+langchain-community
+langchain-core
+langchain
+langchain-openai
+pydantic
+bs4
+langgraph
+langchain-chroma
+
+# api development
+fastapi
+uvicorn
+
+# graphical interface
+streamlit
+
+# transcript fetching
+youtube-transcript-api
