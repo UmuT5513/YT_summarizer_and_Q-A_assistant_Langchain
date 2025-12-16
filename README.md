@@ -1,5 +1,10 @@
 # YouTube Video Q&A Assistant
 
+<img width="724" height="870" alt="Screenshot from 2025-12-16 22-59-29" src="https://github.com/user-attachments/assets/26f59d76-399d-4495-9183-567a22e16b7c" />
+
+<img width="724" height="870" alt="Screenshot from 2025-12-16 22-59-36" src="https://github.com/user-attachments/assets/bad66abd-e31b-4c56-85f3-da9ea05b5d64" />
+
+
 A comprehensive AI-powered assistant that allows users to fetch YouTube video transcripts, generate summaries, and ask questions about video content using Retrieval-Augmented Generation (RAG).
 
 ## Features
