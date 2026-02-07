@@ -14,7 +14,7 @@ load_dotenv()
 
 def load_documents(video_id):
     '''convert txt file to langchain documents'''
-    loader = TextLoader(f"./transcripts/transcript_{video_id}.txt")
+    loader = TextLoader(f"./transcripts/transcript_{video_id}.txt", encoding="utf-8")
     video_document = loader.load()
     return video_document
 
@@ -35,28 +35,11 @@ def add_transcript_to_vectorstore(video_id, vectorstore ,collection_name="youtub
     vectorstore.add_documents(documents=splitted_documents, collection_name=collection_name)
 
 
-    
 
-def retriever(vectorstore):
-    '''
-    Parametres:
 
-                vectorstore: Chroma tipinde bir vector store
-                
-    Returns:
-    
-                retriever: a vectore store retriever
-    '''
-   
-    print("[INFO] Retriever is searching in vectorstore...")
-    retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
 
-    # -- example
-    #answer_from_retriever=retriever.invoke("Altay cem meriç in anlattığı yayın evi sahibi adam nasıl zoom toplantısı elde etmiş?")
-    #print(answer_from_retriever)
-    #print(len(answer_from_retriever[0].page_content))
-    #context_text="\n\n".join(doc.page_content for doc in answer_from_retriever)
-    #print(context_text)
 
-    return retriever
+
+
+
 

@@ -1,11 +1,20 @@
 from fastapi import FastAPI
 import uvicorn
-from main import q_answer, summarizer, url_to_vectorstore
+from main import q_answer, summarizer, 
 from pydantic import BaseModel
 from utils.fetch_transcript import read_transcript
+import database
+
 
 app = FastAPI()
 
+# DB oturumu alma
+def get_db():
+    db = database.SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 @app.get("/")
 def root():
