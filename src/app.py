@@ -30,7 +30,7 @@ def root():
 def get_transcript(video_id: str, session: Session = Depends(get_db)):
     """Read a saved transcript"""
     video = session.query(models.Video).filter(models.Video.video_id == video_id).first()
-    text = read_transcript(video.transcript_file_path)
+    text = read_transcript(video_id=video.video_id)
     return {"video_id": video_id, "transcript": text}
 
 @app.post("/add_transcript_to_system")
@@ -38,7 +38,7 @@ def add_transcript_to_system(video_url, session: Session = Depends(get_db))-> No
 
     video_id, channel_id = main_add_transcript_to_system(video_url=video_url, db=session)
 
-    return {"message":"[INFO] Transcript was added to system."}
+    return {"video_id":video_id,"channel_id":channel_id,"message":"[INFO] Transcript was added to system."}
     
 
 

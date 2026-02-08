@@ -65,9 +65,9 @@ def save_transcript_as_txt(video_id)-> str | None:
 
 
 
-def read_transcript(path):
+def read_transcript(video_id):
     try:
-        with open(path, "r", encoding="utf-8") as f:
+        with open(f"./transcripts/transcript_{video_id}.txt", "r", encoding="utf-8") as f:
             transcript = f.read().strip()
             
             if not transcript:
