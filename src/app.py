@@ -6,7 +6,7 @@ from utils.fetch_transcript import read_transcript
 import database
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-import models
+import models, schemas
 
 
 app = FastAPI()
@@ -35,7 +35,7 @@ def get_transcript(video_id: str, session: Session = Depends(get_db)):
 
 @app.post("/add_transcript_to_system")
 def add_transcript_to_system(video_url, session: Session = Depends(get_db))-> None:
-
+    
     video_id, channel_id = main_add_transcript_to_system(video_url=video_url, db=session)
 
     return {"video_id":video_id,"channel_id":channel_id,"message":"[INFO] Transcript was added to system."}

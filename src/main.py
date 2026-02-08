@@ -127,13 +127,13 @@ if __name__ == "__main__":
         summary = summary(video_id=VIDEO_ID)
         print("[INFO] Summary Generated: ", summary)
         user_question = input("> Ask a question about the video: ")
-        answer = ai_process(vectorstore=VECTORSTORE, scope="video", question=user_question, video_id=VIDEO_ID)
+        answer = ai_process(scope="video", question=user_question, video_id=VIDEO_ID)
         print(answer)
     
     # for the cumulative channel knowledge
     elif opt == "1":    
         user_question = input("> Ask a question about the video: ")
-        answer = ai_process(vectorstore=VECTORSTORE, scope="channel", question=user_question, channel_id=CHANNEL_ID)
+        answer = ai_process(scope="channel", question=user_question, channel_id=CHANNEL_ID)
         print(answer)
     else:
         print("Enter a valid value!")
