@@ -4,133 +4,186 @@
 
 <img width="724" height="870" alt="Screenshot from 2025-12-16 22-59-36" src="https://github.com/user-attachments/assets/bad66abd-e31b-4c56-85f3-da9ea05b5d64" />
 
+An AI-powered assistant that fetches YouTube video transcripts, generates structured summaries, and answers questions about video content using **Retrieval-Augmented Generation (RAG)** with LangChain and OpenAI.
 
-A comprehensive AI-powered assistant that allows users to fetch YouTube video transcripts, generate summaries, and ask questions about video content using Retrieval-Augmented Generation (RAG).
+---
 
 ## Features
 
-- **Transcript Fetching**: Automatically fetch and save YouTube video transcripts
-- **Video Summarization**: Generate structured summaries with key takeaways using OpenAI GPT models
-- **Q&A System**: Ask questions about video content with context-aware answers
-- **Vector Database**: Persistent storage using ChromaDB for efficient retrieval
+- **Transcript Fetching** — Automatically fetch and save YouTube video transcripts using `youtube-transcript-api` and `yt-dlp`
+- **Video Summarization** — Generate structured summaries with title, bullet-point summary, and key takeaways via OpenAI GPT-4o-mini
+- **Q&A with RAG** — Ask questions about video content; relevant transcript chunks are retrieved from a vector database and passed to the LLM for context-aware answers
+- **Scope-Based Q&A** — Chat with a single video's transcript or query across an entire channel's cumulative knowledge
+- **Vector Database** — Persistent storage with ChromaDB and OpenAI embeddings for efficient similarity search
+- **SQLite Database** — Stores video and channel metadata (title, duration, language, word count, etc.) via SQLAlchemy
 - **Multiple Interfaces**:
-  - Command-line interface (`main.py`)
-  - REST API (`app.py` with FastAPI)
-  - Web GUI (`gui.py` with Streamlit)
-- **Incremental Processing**: Avoid reprocessing videos already in the system
+  - **CLI** — Command-line interface (`main.py`)
+  - **REST API** — FastAPI backend (`app.py`) with full CRUD endpoints
+  - **Web GUI** — Streamlit frontend (`gui.py`) with dark-themed modern UI
+- **Incremental Processing** — Skips videos that have already been processed to avoid duplication
+
+---
 
 ## Project Structure
 
 ```
-yt_video_summary/
+YT_summarizer_and_Q-A_assistant_Langchain/
 ├── README.md
 ├── requirements.txt
-├── video_id.txt                 # Tracks processed video IDs
-├── test.ipynb                   # Simple test notebook
+├── video_id.txt                    # Tracks processed video IDs
+├── app.db                          # SQLite database (auto-created)
+├── .env                            # OpenAI API key (user-created)
 ├── src/
-│   ├── main.py                  # Command-line interface
-│   ├── app.py                   # FastAPI backend server
-│   ├── gui.py                   # Streamlit web interface
+│   ├── __init__.py
+│   ├── main.py                     # CLI entry point
+│   ├── app.py                      # FastAPI REST API server
+│   ├── gui.py                      # Streamlit web interface
+│   ├── models.py                   # SQLAlchemy ORM models (Channel, Video)
+│   ├── database.py                 # Database engine & session configuration
+│   ├── schemas.py                  # Pydantic schemas for API validation
+│   ├── test_models.py              # Unit tests
 │   └── utils/
-│       ├── fetch_transcript.py  # YouTube transcript fetching
-│       ├── ingestion.py         # Document processing and vector store operations
-│       ├── vectorstore.py       # ChromaDB vector store management
-│       └── yt_summarizer.py     # AI summarization and Q&A logic
-├── transcripts/                 # Saved transcript text files
-│   ├── transcript_[video_id].txt
-└── .transcript_chroma/          # ChromaDB persistent storage (auto-created)
+│       ├── __init__.py
+│       ├── fetch_transcript.py     # Transcript fetching, metadata extraction & DB storage
+│       ├── ingestion.py            # Document loading, splitting & vector store ingestion
+│       ├── vectorstore.py          # ChromaDB vector store creation & loading
+│       └── yt_summarizer.py        # LLM summarization & Q&A chains
+├── transcripts/                    # Saved transcript .txt files
+│   └── transcript_[video_id].txt
+└── .transcript_chroma/             # ChromaDB persistent storage (auto-created)
 ```
+
+---
 
 ## How It Works
 
-1. **Transcript Fetching**: Uses `youtube-transcript-api` to download video transcripts
-2. **Document Processing**: Splits transcripts into chunks using LangChain's text splitters
-3. **Vector Storage**: Embeds and stores chunks in ChromaDB using OpenAI embeddings
-4. **Retrieval**: Uses similarity search to find relevant content for questions
-5. **Generation**: Combines retrieved context with user questions for accurate answers
-6. **Summarization**: Structured output with video title, summary, and key takeaways
+```
+YouTube URL
+    │
+    ▼
+┌─────────────────────┐
+│  1. Fetch Metadata   │  yt-dlp extracts video title, duration, channel info
+└────────┬────────────┘
+         │
+         ▼
+┌─────────────────────┐
+│  2. Fetch Transcript │  youtube-transcript-api downloads the transcript
+└────────┬────────────┘
+         │
+         ▼
+┌─────────────────────┐
+│  3. Store Metadata   │  SQLAlchemy saves Channel & Video records to SQLite
+└────────┬────────────┘
+         │
+         ▼
+┌─────────────────────┐
+│  4. Chunk & Embed    │  LangChain splits text into 500-char chunks,
+│                      │  OpenAI embeds them, stored in ChromaDB
+└────────┬────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────┐
+│  5. Summarize / Q&A                         │
+│                                             │
+│  Summarize: Full transcript → GPT-4o-mini   │
+│             → Structured output (title,     │
+│               summary, key takeaways)       │
+│                                             │
+│  Q&A: Question → Similarity search on       │
+│       ChromaDB → Top 3 chunks + question    │
+│       → GPT-4o-mini → Answer                │
+└─────────────────────────────────────────────┘
+```
 
+---
 
 ## Installation
 
-1. **Clone or navigate to the project directory**:
-   ```bash
-   cd /path/to/yt_video_summary
-   ```
+### 1. Clone the repository
 
-2. **Create a virtual environment** (recommended):
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   ```
+```bash
+git clone https://github.com/your-username/YT_summarizer_and_Q-A_assistant_Langchain.git
+cd YT_summarizer_and_Q-A_assistant_Langchain
+```
 
-3. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 2. Create a virtual environment
 
-4. **Set up environment variables**:
-   Create a `.env` file in the root directory:
-   ```
-   OPENAI_API_KEY=your_openai_api_key_here
-   ```
+```bash
+python -m venv .venv
+
+# Windows
+.venv\Scripts\activate
+
+# macOS / Linux
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Set up environment variables
+
+Create a `.env` file in the project root:
+
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+---
 
 ## Usage
 
-### Command-Line Interface
-
-Run the main script to process a video and interact via terminal:
+### Option 1: Command-Line Interface
 
 ```bash
-python src/main.py
+python -m src.main
 ```
 
-This will:
-1. Process the default video URL (or modify `VIDEO_URL` in `main.py`)
-2. Generate a summary
-3. Allow you to ask questions interactively
+- Processes a YouTube video URL (set `VIDEO_URL` in `main.py`)
+- Generates a summary
+- Lets you ask questions interactively in the terminal
 
-### REST API Server
+### Option 2: REST API + Web GUI (Recommended)
 
-Start the FastAPI server:
+**Terminal 1 — Start the FastAPI server:**
 
 ```bash
-python src/app.py
+uvicorn src.app:app --reload
 ```
 
-The API will be available at `http://127.0.0.1:8000` with endpoints:
+The API runs at `http://127.0.0.1:8000` with the following endpoints:
 
-- `GET /` - Health check
-- `POST /add_transcript_to_system` - Add a video transcript (params: `video_url`)
-- `POST /chat` - Ask a question (params: `question`)
-- `POST /summarize` - Generate summary (params: `transcript`)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/` | Health check |
+| `GET` | `/videos` | List all processed videos |
+| `GET` | `/channels` | List all channels |
+| `GET` | `/channels/{channel_id}` | Get channel details |
+| `GET` | `/transcript/{video_id}` | View a saved transcript |
+| `POST` | `/add_transcript_to_system` | Process a new YouTube video |
+| `POST` | `/summarize/{video_id}` | Generate AI summary |
+| `POST` | `/chat_video/{video_id}` | Q&A scoped to a single video |
+| `POST` | `/chat_channel/{channel_id}` | Q&A across an entire channel |
 
-### Web GUI
-
-Start the Streamlit interface:
+**Terminal 2 — Start the Streamlit GUI:**
 
 ```bash
 streamlit run src/gui.py
 ```
 
-This provides a user-friendly web interface to:
-1. Enter YouTube video URLs
-2. View generated summaries
-3. Ask questions in a chat-like interface
+The web interface provides:
 
-**Note**: The GUI requires the FastAPI server to be running in the background.
+- **Add Video** — Paste a YouTube URL and process it
+- **Summarize** — Select a video and generate an AI summary
+- **Q&A Chat** — Ask questions scoped to a video or channel
+- **Transcript** — View saved transcripts
 
+> **Note:** The Streamlit GUI requires the FastAPI server to be running.
 
-## Dependencies
-
-Key libraries used:
-- `langchain-openai`: OpenAI integration
-- `langchain-chroma`: Vector database
-- `youtube-transcript-api`: YouTube transcript fetching
-- `fastapi`: REST API framework
-- `streamlit`: Web interface
-
-
+---
 
 ## License
 
