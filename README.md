@@ -1,8 +1,12 @@
 # YouTube Video Q&A Assistant
 
-<img width="724" height="870" alt="Screenshot from 2025-12-16 22-59-29" src="https://github.com/user-attachments/assets/26f59d76-399d-4495-9183-567a22e16b7c" />
+<img width="1833" height="824" alt="{A09E0088-81E0-45C4-B2C3-B468D6EA2424}" src="https://github.com/user-attachments/assets/57a8881f-7370-479c-b61c-b32334923ce1" />
 
-<img width="724" height="870" alt="Screenshot from 2025-12-16 22-59-36" src="https://github.com/user-attachments/assets/bad66abd-e31b-4c56-85f3-da9ea05b5d64" />
+<img width="1841" height="841" alt="{CED1A44E-6EE8-4DF0-928D-2C1DAC5150B3}" src="https://github.com/user-attachments/assets/f1b3235a-601d-4288-9422-4bdf03ceaa64" />
+
+<img width="1840" height="809" alt="{90C9D38C-FB6A-4115-8765-1CAD867FAC78}" src="https://github.com/user-attachments/assets/7ee5960b-6912-4787-8959-41af68f82d08" />
+
+<img width="1842" height="788" alt="{95623097-6CB1-4D37-992C-60549B24F778}" src="https://github.com/user-attachments/assets/6497a706-1334-4880-a3a4-e67193a344c5" />
 
 An AI-powered assistant that fetches YouTube video transcripts, generates structured summaries, and answers questions about video content using **Retrieval-Augmented Generation (RAG)** with LangChain and OpenAI.
 
