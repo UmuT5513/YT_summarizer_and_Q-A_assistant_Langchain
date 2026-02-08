@@ -21,6 +21,8 @@ class Channel(Base):
 class Video(Base):
     __tablename__ = "Video"
     __table_args__ = {'extend_existing': True}
+    def __repr__(self):
+        return f"<Video(video_id='{self.video_id}', title='{self.video_title}')>"
     
     video_id = Column(String, primary_key=True, index=True, autoincrement=False) #unique id for each video can be fetched from youtube video url.
     
